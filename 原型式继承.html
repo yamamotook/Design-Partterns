@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		
+		
+		
+		<script type="text/javascript">
+			// 原型式继承 与 类式继承截然不同
+			// 原型式继承时,并不需要定义类的结构,直接使用对象自变量的方式创建一个对象,这个对象被称为原型对象,这个对象将在稍后被重用.
+			
+			//创建原型对象
+			var Person = {
+				name : 'default name', 
+				getName : function(){
+					console.log(this.name);
+					return this.name;
+				}
+			}
+			//clone 方法 创建一个空的实例,并将这个空实例的原型指向原型对象(Person)
+				function F (){};
+			function clone(object){
+				F.prototype = object;
+				return new F();
+			}
+			
+			//直接通过Person 创建一个实例
+			// var reader = clone(Person);
+			// reader.getName();//-->default name, 读取的是Person.name
+			// reader.name = 'yamamoto';
+			// reader.getName();//-->yamamoto, 读取的是reader.name 上的属性
+			
+			
+			//甚至可以不用创建一个Author的构造函数 创建Person的子类
+			var Author = clone(Person);
+			Author.books = [];
+			Author.getBooks = function(){
+				// console.log(this.books);
+				return this.books;
+			}
+			
+			var author1 = clone(Author);
+			var author2 = clone(Author);
+			var author3 = clone(Author);
+			
+			author1.name = 'yammamoto';
+			author2.name = 'akane';
+			author1.books = ['trump'];//使用直接赋值的方式,可以让每一个author都能有一个books副本
+			author2.books = ['detail'];//使用push就 やばいぜ
+			//对继承而来的成员的读写不对等性
+			//一个克隆的原型对象并不是以一个完全独立的副本,其实克隆的原型对象都指向一个.
+			//克隆刚刚被创建时 author1.name 指向的是 Person.name,
+			//在读取author1.name 的值的时候,如果你还没有为author1定义name属性的话,那么它将读取到原型对象上的属性
+			// author1.books.push('new book'); //这个时候的books是 Author上的books,而不是实例中的books
+			//这个问题可以配合hasOwnProperty()来解决
+			if(author1.hasOwnProperty('books')){
+				author1.books.push('new books');
+			}
+			//author1能够成功push
+			
+			//无法push ,author3无法push
+			if(author3.hasOwnProperty('books')){
+				author3.books.push('new book2');
+			}
+			
+			
+			//有时候原型对象自己也包含子对象,如果想覆盖子对象中一个属性时,不得不重新创建一个子对象
+			// var CompoundObject = {
+			// 	string : 'default string1',
+			// 	childObject : {
+			// 		bool : true,
+			// 		num : 10
+			// 	}
+			// };
+			
+			// var compoundObjectClone = clone(CompoundObject);
+			// //bad!! 这回也会改变其他实例的 num
+			// // compundObjectClone.childObject.num = 5;
+			// //应该这样:   创建一个新的对象给childObject
+			// compoundObjectClone.childObject = {
+			// 	bool : true;
+			// 	num : 5
+			// };
+			
+			//更好的办法,使用工厂模式创建childObject
+			var CompoundObject = {
+				string : 'default string2',
+				createChildObject : function(){
+					return {
+						bool : true,
+						num : 10
+					}
+				}
+			};
+			
+			var compoundObjectClone2 =  clone(CompoundObject);
+			compoundObjectClone2.childObject = compoundObjectClone2.createChildObject();
+			compoundObjectClone2.childObject.num = 5;
+			
+			
+			
+			//原型式继承的有点:原型式继承能够更加节约内存.原型链读取成员的方式,使每一个克隆出来得对象都共享一个原型对象.
+		</script>
+	</body>
+</html>

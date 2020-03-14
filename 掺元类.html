@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		
+		<script>
+			//有时候需要把一个函数 扩展到多个类中
+			//可以使用扩充的方式让这些类共享该函数
+			//先创建一个包含各种通用方法的对象,再用这个对象去扩展其他类
+			//这种包含了通用方法的类叫做 掺元类
+			//他们通常不会被实例化,或直接调用,它们存在的目的,只是为了向其他类提供自己的方法
+			
+			
+			//举个列子:
+			
+			//serialize : 列出对象中的属性,和他们的属性值
+			//这种方法可能会在不同的类中被用到,但没必要让所有的类都继承Mixin,在每一个类中加入这段代码也不明智.
+			var Mixin = function(){}
+			Mixin.prototype = {
+				serialize : function(){
+					var output = [];
+					for(var key in this){
+						output.push(key + ':' + this[key]);
+					}
+					return output.join(',');
+				}
+			}
+		
+			function Author(name,books){
+				this.name = name;
+				this.books = books;
+			}
+			/**
+			 * @param {Class} recivingClass 需要继承公共方法的类
+			 * @param {Class} givingClass   提供公共方法的类
+			 * 
+			 * 这个方法可以继承所有的方法,也能继承传入的指定的方法
+			 * **/
+			function augment (recivingClass, givingClass){
+				if(arguments[2]){//复制指定的方法
+					for(var i = 2 ; i < arguments.length ; i++){
+						recivingClass.prototype[arguments[i]] = givingClass.prototype[arguments[i]]
+					}
+				}else{
+					//give all
+					for(var methodName in givingClass.prototype){
+						if(!recivingClass.prototype[methodName]){
+							recivingClass.prototype[methodName] = givingClass.prototype[methodName];
+						}
+					}
+				}
+			
+				
+			}
+			
+			augment(Author,Mixin);
+			
+			var author1 = new Author('yamamoto',['trumps']);
+			console.log(author1.serialize());
+			
+		</script>
+	</body>
+</html>

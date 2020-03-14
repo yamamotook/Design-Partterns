@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+	<script>
+		// 定义接口 
+		/**
+		 * interface ajaxHandler
+		 * request
+		 * createXHR
+		 * 
+		 * **/
+		 var simpleHander = function(){};
+		 // simpleHander 需要实现 ajaxHandler所定义的接口
+		 simpleHander.prototype = {
+			 request : function(method,url,callback,postVars){
+				 //获得xhr实例
+				 var xhr = this.createXHR();
+				 //设置响应状态监听 
+				 xhr.onreadystatechange = function(){
+					 if(xhr.readyState != 4) return ;
+					 (xhr.status == 200) ?
+						callback.success(xhr.responseText,xhr.responseXML) :
+						callback.fail(xhr.status);
+				 };
+				 //准备发送请求
+				 xhr.open(method,url,true);
+				 if(method !== 'post') postVars = null;
+				 //launch!
+				 xhr.send(postVars);
+			 },
+			 createXHR : function(){
+				 //簡単なファクトリーモードが来るぞ!
+				 //定义3种 不同类型的 XHR类
+				 var method = [
+					 function(){
+						 //for nomarl
+						return new XMLHttpRequest();
+					 },
+					 function (){
+						 //for fucking microsoft
+						return new ActiveXObject('Msxml2.XMLHTTP')
+					 },
+					 function (){
+						return new ActiveXObject('Microsoft.XMLHTTP')
+					 }
+				];
+				//ブラザーに合わせるXHRを試す
+				for(var len = method.length; len-- ;){
+					try{
+						method[len]();
+					}
+					catch(e){
+						continue;
+					}
+					//memoizing 下次再调用createXHR时 就无需判断
+					this.createXHR = method[len];
+					return method[len]();
+				}
+				
+			 }
+		 }
+		
+	</script>
+</html>

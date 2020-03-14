@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+	<script>
+		//schonfinkelize 函数Curry化
+		/**
+		 * 什么时候使用Curry?
+		 * 当你在多次使用同一个函数的时候,他们的参数大多相同,这个时候就可以使用函数柯里化.
+		 * 
+		 * 如:
+		 * 有一个累加器,需要频繁的计算 x + y 
+		 * 其中x 为一个固定值100
+		 * 
+		 * 
+		 * **/
+
+		//原始的方法
+		//每次都必须将100作为参数传入.
+		// function add(x,y){
+		//  return x + y;
+		// }
+		// console.log(add(100,50));
+		// console.log(add(100,60));
+		// console.log(add(100,70));
+
+		//----------------------------------函数的Curry化 正是解决了这样的问题
+		//这是一个不通用的函数
+		// function addSchonfinkelize(x, y) {
+		// 	if (typeof y == 'undefined') {
+		// 		return function(y) {
+		// 			return x + y;
+		// 		}
+		// 	}
+		// 	return x + y;
+		// }
+		// //现在的调用方式
+		// var afterCurry = addSchonfinkelize(100);
+		// console.log(afterCurry(20));
+		// console.log(afterCurry(30));
+		//当然也可以很炫酷的这样调用
+		// console.log(addSchonfinkelize(100)(20));
+		
+		//----------------------------------函数Curry化 通用函数
+		// 这种方式的柯里化 也有缺点,只支持2部柯里化..
+		// function schonfinkelize(fn){
+		// 	var slice = Array.prototype.slice,//arg是一个类数组,并不支持slice,所以将数组的slice保存一下,供后面使用
+		// 		cache_arg = slice.apply(arguments,[1]);//cache 
+		// 		return function (){
+		// 			var new_arg = slice.apply(arguments,[0]),
+		// 				args = cache_arg.concat(new_arg);
+		// 				return fn.apply(null,args);
+		// 		}
+		// }
+		// function add(x,y){
+		// 	return x + y;
+		// }
+		// var afterCurry = schonfinkelize(add,100);
+		// console.log(afterCurry(50));
+		
+	</script>
+</html>

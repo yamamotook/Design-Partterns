@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			//一个Book类,有一个静态方法 和 静态属性
+			var Book = (function(){
+				//静态属性,方法的定义:
+				var numOfBook = 0;//记录book的数量
+				function checkIsbn (isbn){
+					//check....
+					return true;
+				}
+				return function(newIbsn,newTitle,newAuthor){
+					var ibsn ,
+						title,
+						author;
+					this.getNewIbsn = function(){
+						return ibsn;
+					}
+					this.setIbsn = function(newIbsn){
+						if(checkIsbn(newIbsn)){
+							ibsn = newIbsn;
+						}
+					}
+					numOfBook++;
+					if(numOfBook > 50) throw new Error('Only 50 instances of book can be created');
+					//title,author 同理
+					// this.getTitle = function(){...}
+					this.setIbsn(newIbsn);
+					//
+				}
+			})();
+		</script>
+	</body>
+</html>

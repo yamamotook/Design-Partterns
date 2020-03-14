@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+	<script>
+		/**
+		 * 类式继承
+		 * 
+		 * 将子类的原型指向父类的一个实例 从而实现类的继承
+		 * 
+		 * **/
+		//使用原型链 实现类的继承...基本版
+			function Person (name){
+				this.name = name;
+			}
+			Person.prototype.getName = function(){
+				console.log(this);
+				return this.name;
+			}
+			// function Author(name,books){
+			// 	Person.call(this,name);//Person.call调用了Person的构造函数相当于new Person(),只不过新的实例的this指向的是Author的this
+			// 	this.books = books;
+			// }
+			// Author.prototype = new Person();
+			// Author.prototype.constructor = Author;
+			// Author.prototype.getBooks = function (){
+			// 	return this.books;
+			// }
+		
+		//extend 继承函数的封装
+			
+			// function extend(subClass,superClass){
+			// 	
+			// 	function F(){
+			// 		
+			// 	}
+			// 	F.prototype = superClass.prototype;
+			// 	subClass.prototype = new F(); //*
+			// 	subClass.prototype.constructor = subClass;
+			// 	
+			// }
+			// function Author(name,books){
+			// 	Person.call(this,name);
+			// 	this.books = books;
+			// }
+			
+		//extend 的使用方法
+			// extend(Author,Person);
+			//子类的原型方法需要再extend函数执行之后设置,否则会被 new F()的实例 覆盖
+			// Author.prototype.getBooks = function(){
+			// 	return this.books;
+			// }
+			/**
+			 *
+			 *	*:extend 封装后的继承 , 可以避免父类实例的创建,因为当父类实例特别庞大时,会导致程序执行大量的计算
+			 * 
+			 **/
+		//extend 加强版
+		function extend(subClass,superClass){
+			function F (){};
+			F.prototype = superClass.prototype;
+			subClass.prototype = new F();
+			subClass.prototype.constructor = subClass;
+			subClass.prototype.superClass = superClass.prototype; //在子元素原型中存入父类的的原型
+			if(superClass.prototype.constructor == Object.prototype.constructor){
+				superClass.prototype.constructor = superClass;//确定父类原型的constructor被正确设置
+			}
+		}
+		function Author(name,books){
+			Author.prototype.superClass.constructor.call(this,name); //通过找到父类原型上的构造函数,并复用,这样可以降低Author和Person之间的耦合
+			this.books = books;
+		}
+		extend(Author,Person);
+		Author.prototype.getBooks = function(){
+			return this.books;
+		}
+		
+	</script>
+</html>

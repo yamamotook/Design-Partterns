@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		
+	
+	
+	</body>
+	<script type="text/javascript">
+		
+		// 1---------------------------------------------------------
+		/**
+		 * 解释法模拟接口
+		 * 
+		 * interface Composite{
+			 function add(child)
+			 function remoeve(child)
+			 function getChild(index)
+		 }
+		 **/
+		 // 接口的使用:
+		 // var CompositeForm = function (id,method,action){
+			//  //implements Composite
+		 // }
+		 // // 实现接口A
+		 // CompositeForm.prototype.add = function (child){}
+		 // CompositeForm.prototype.remove = function(child){}
+		 // CompositeForm.prototype.getChild = function(index){}
+		 
+		 // 2----------------------------------------------------
+		 // 属性检查法
+		 var CompositeForm = function (){
+				this.implementsInterface = ['Composite'];//声明这个类需要实现的接口
+				// ...
+		}
+		//传入一个实例
+		// var addForm =function(instance,interface){
+		// 	if(!implements(instance,interface)){//判断对象是否已经继承相应的接口
+		// 		throw new Error('Object does not implement required interface');
+		// 	}
+		// 	return true;
+		// }
+		// 
+		// //判断函数
+		// function implements(object){
+		// 	for(var i=1 ; i < arguments.length ; i++ ){
+		// 		var interfaceName = arguments[i];
+		// 		var interfaceFounded = false;
+		// 		for(var j = 0 ; j < object.implementsInterface.length ; j++){
+		// 			if(object.implementsInterface[j] == interfaceName){
+		// 				interfaceFounded = true;
+		// 				break;
+		// 			}
+		// 		}
+		// 		if(!interfaceFounded){
+		// 			return false;
+		// 		}
+		// 	}
+		// 	return true;
+		// }
+		/**
+		 * interface People
+		 * function createhead()
+		 * function createbody()
+		 * **/
+		// var Women = function (name){
+		// 	this.name = name;
+		// 	this.implementsInterface = ['People']
+		// }
+		// var women = new Women;
+		// Women.prototype.createhead = function(){
+		// 	console.log('create head finish');
+		// }
+		// Women.prototype.createbody = function(){
+		// 	console.log('create body finish');
+		// }
+		// 
+		// console.log(addForm(women,'People'));
+		// 
+		
+		// 3----------------------------------------------------------------
+		/**
+		 * 接口信息
+		 * interface People
+		 * function createbody()
+		 * function createhead()
+		 * 
+		 * **/
+		
+		function Interface (name,method){
+			if(arguments.length != 2){
+				throw new Error('你需要传入2个参数');
+			}
+			this.name = name;
+			this.method = [];
+			for(var i = 0 , len = method.length; i < len ; i++){
+				if(typeof method[i] != 'string'){
+					throw new Error('接口方法名必须为类型string');
+				}else{
+					this.method.push(method[i]);
+				}
+			}
+		}
+		
+		Interface.ensureImplements = function(obj){
+			console.log(arguments);
+			if(arguments.length < 2){
+				throw new Error('必须传入2个参数以上,第一个参数为要检测的实例,后的参数为 需要通过的接口');
+			}
+			for(var i = 1 ; i < arguments.length ; i++){
+				var interface = arguments[i];
+				console.log(interface.constructor);
+				if(interface.constructor != Interface){
+					throw new Error('请传入正确的接口');
+				}
+				for(var j = 0 , len = interface.method.length ; j < len ; j++){
+					var method = interface.method[j];
+					console.log(method);
+					if(!obj[method] || typeof obj[method] != 'function'){
+						throw new Error('请实现接口!');
+					}
+				}
+			}
+		}
+		
+		var People = new Interface('People',['createbody','createhead']);
+		
+		function Women(name){//implements People
+			this.name = name;
+		}
+		Women.prototype.createhead = function(){
+			console.log(this.name + '的头创建完毕');
+		}
+		Women.prototype.createbody = function (){
+			console.log(this.name + '的身子创建完毕'); 
+		}
+		function isImplemented(instance,interface){
+			Interface.ensureImplements(instance,interface);
+			console.log('验证通过');
+		}
+		var girl = new Women('akane');
+		isImplemented(girl,People);
+	</script>
+</html>
